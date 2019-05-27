@@ -18,7 +18,7 @@ function getRecipes(req, res, next) {
     .select()
     .from("recipes")
     .then(recipes => {
-        res.status(200).send({ recipes });
+        res.status(200).send(recipes);
         return next();
     });
 }

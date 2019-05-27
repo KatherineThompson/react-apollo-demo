@@ -46,6 +46,9 @@ module.exports = {
     devServer: {
         contentBase: path.join(__dirname, "dist"),
         compress: true,
+        headers: {
+            "Access-Control-Allow-Origin": "*"
+        },
         historyApiFallback: true,
         host: "localhost",
         hot: true,
