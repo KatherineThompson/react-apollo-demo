@@ -30,12 +30,16 @@ h1 {
     }
 }
 
+.button-container,
 .recipe-view__header,
 .recipe-form__footer,
 .recipe-list__header {
     align-items: center;
     display: flex;
     justify-content: space-between;
+}
+.button-container .button ~ .button {
+    margin-left: 8px;
 }
 
 .button {

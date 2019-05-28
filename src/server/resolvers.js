@@ -53,6 +53,10 @@ function getIngredientsByRecipeId(id) {
     });
 }
 
+function getRecipeIngredients(_, { recipeId }) {
+    return getIngredientsByRecipeId(recipeId);
+}
+
 const Recipe = {
     id: ({ id }) => id,
     name: ({ name }) => name,
@@ -73,7 +77,7 @@ module.exports = {
     RootQuery: {
         recipes: getRecipes,
         recipe: getRecipeById,
-        recipeIngredients: getIngredientsByRecipeId
+        recipeIngredients: getRecipeIngredients
     },
     Mutation: {
         createRecipe,

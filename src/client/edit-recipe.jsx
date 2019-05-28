@@ -11,6 +11,7 @@ const editRecipe = gql`
             id
             name
             image
+            link
         }
     }
 `;

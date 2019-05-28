@@ -12,6 +12,7 @@ const createRecipe = gql`
             id
             name
             image
+            link
         }
     }
 `;

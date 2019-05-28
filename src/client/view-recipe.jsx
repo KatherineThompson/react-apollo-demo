@@ -42,14 +42,22 @@ const ViewRecipe = ({ recipe, loading, error }) => {
         <div className="recipe-view">
             <div className="recipe-view__header">
                 <h1>{recipe.name}</h1>
-                <Link
-                    className="button"
-                    to={`/recipes/edit/${recipe.id}`}
-                >
-                    Edit
-                </Link>
+                <div className="button-container">
+                    <Link
+                        className="button"
+                        to="/recipes"
+                    >
+                        Back
+                    </Link>
+                    <Link
+                        className="button"
+                        to={`/recipes/edit/${recipe.id}`}
+                    >
+                        Edit
+                    </Link>
+                </div>
             </div>
-            <div>{`Link: ${recipe.link}`}</div>
+            <a href={recipe.link || ""}>Link</a>
             <h3>Ingredients</h3>
             {ingredients}
             <img src={recipe.image || recipe.defaultImage} />
