@@ -11,6 +11,17 @@ function getRecipes() {
     });
 }
 
+function getFilteredRecipes(_, { ingredientId }) {
+    return superagent
+    .get(`${microServiceUrl}/recipes`)
+    .query({ ingredient: ingredientId })
+    .then(res => res.body)
+    .catch(err => {
+        global.console.log("Error", err);
+        throw err;
+    });
+}
+
 function createRecipe(_, { recipe }) {
     return superagent
     .post(`${microServiceUrl}/recipes`)
@@ -128,6 +139,7 @@ const Unit = {
 module.exports = {
     RootQuery: {
         recipes: getRecipes,
+        filteredRecipes: getFilteredRecipes,
         recipe: getRecipeById,
         recipeIngredients: getRecipeIngredients,
         ingredients: getAllIngredients,

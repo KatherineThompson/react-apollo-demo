@@ -2,6 +2,8 @@ import React, { Fragment } from "react";
 import gql from "graphql-tag";
 import { graphql, compose } from "react-apollo";
 
+import IngredientsSelect from "./ingredients-select";
+
 const selectQuery = gql`
     query SelectQuery {
         ingredients {
@@ -56,16 +58,11 @@ class RecipeIngredients extends React.Component {//eslint-disable-line
                 <div className="form-row--multi">
                     <div>
                         <label>Ingredient</label>
-                        <select
+                        <IngredientsSelect
                             value={this.state.ingredientId}
                             onChange={e => this.setState({ ingredientId: e.target.value })}
-                        >
-                            {
-                                this.props.ingredients.map(ingredient => (
-                                    <option value={ingredient.id} key={ingredient.id}>{ingredient.name}</option>
-                                ))
-                            }
-                        </select>
+                            ingredients={this.props.ingredients}
+                        />
                     </div>
                     <div>
                         <label>Amount</label>

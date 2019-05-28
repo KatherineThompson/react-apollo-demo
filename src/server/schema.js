@@ -68,6 +68,7 @@ const mutations = gql`
 const rootQuery = gql`
     type RootQuery {
         recipes: [Recipe]
+        filteredRecipes(ingredientId: ID): [Recipe]
         recipe(id: ID!): Recipe
         recipeIngredients(recipeId: ID!): [RecipeIngredient]
         ingredients: [Ingredient]
