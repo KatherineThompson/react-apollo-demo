@@ -9,6 +9,14 @@ const recipeQuery = gql`
             id
             name
             link
+            image
+            defaultImage
+            ingredients {
+                id
+                name
+                amount
+                unit
+            }
         }
     }
 `;
@@ -25,15 +33,26 @@ const ViewRecipe = ({ recipe, loading, error }) => {
             </div>
         );
     }
+
+    const ingredients = recipe.ingredients.length ? recipe.ingredients.map(ingredient => (
+        <div key={ingredient.id}>{`${ingredient.amount} ${ingredient.unit}${ingredient.amount !== 1 ? "s" : ""} ${ingredient.name}`}</div>
+    )) : <div>No ingredients for this recipe</div>;
+
     return (
-        <div className="recipe-view__header">
-            <h1>{recipe.name}</h1>
-            <Link
-                className="button"
-                to={`/recipes/edit/${recipe.id}`}
-            >
-                Edit
-            </Link>
+        <div className="recipe-view">
+            <div className="recipe-view__header">
+                <h1>{recipe.name}</h1>
+                <Link
+                    className="button"
+                    to={`/recipes/edit/${recipe.id}`}
+                >
+                    Edit
+                </Link>
+            </div>
+            <div>{`Link: ${recipe.link}`}</div>
+            <h3>Ingredients</h3>
+            {ingredients}
+            <img src={recipe.image || recipe.defaultImage} />
         </div>
     );
 };

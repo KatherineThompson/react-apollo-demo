@@ -5,6 +5,7 @@ const recipe = gql`
         id: ID
         name: String
         image: String
+        defaultImage: String
         link: String
         ingredients: [RecipeIngredient]
     }

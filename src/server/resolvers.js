@@ -58,7 +58,8 @@ const Recipe = {
     name: ({ name }) => name,
     image: ({ image }) => image,
     link: ({ link }) => link,
-    ingredients: ({ id }) => getIngredientsByRecipeId(id)
+    ingredients: ({ id }) => getIngredientsByRecipeId(id),
+    defaultImage: () => "https://upload.wikimedia.org/wikipedia/commons/6/64/Foods_%28cropped%29.jpg"
 };
 
 const RecipeIngredient = {

@@ -11,6 +11,7 @@ const createRecipe = gql`
         createRecipe(recipe: $recipe) {
             id
             name
+            image
         }
     }
 `;
@@ -21,7 +22,8 @@ class NewRecipe extends React.Component {
 
         this.state = {
             name: "",
-            link: ""
+            link: "",
+            image: ""
         };
     }
 
@@ -35,13 +37,14 @@ class NewRecipe extends React.Component {
     }
 
     render() {
-        const { name, link } = this.state;
+        const { name, link, image } = this.state;
         return (
             <div>
                 <h1>Add Recipe</h1>
                 <RecipeForm
                     name={name}
                     link={link}
+                    image={image}
                     onChange={this.handleChange}
                 />
                 <div className="recipe-form__footer">

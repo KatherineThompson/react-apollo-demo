@@ -10,6 +10,7 @@ const editRecipe = gql`
         editRecipe(recipe: $recipe, id: $id) {
             id
             name
+            image
         }
     }
 `;
@@ -20,6 +21,7 @@ const recipeQuery = gql`
             id
             name
             link
+            image
         }
     }
 `;
@@ -29,8 +31,9 @@ class EditRecipe extends React.Component {
         super(props);
 
         this.state = {
-            name: props.recipe.name || "",
-            link: props.recipe.link || ""
+            name: (props.recipe && props.recipe.name) || "",
+            link: (props.recipe && props.recipe.link) || "",
+            image: (props.recipe && props.recipe.image) || ""
         };
     }
 
@@ -38,7 +41,8 @@ class EditRecipe extends React.Component {
         if (prevProps.loading && !this.props.loading) {
             this.setState({
                 name: this.props.recipe.name,
-                link: this.props.recipe.link
+                link: this.props.recipe.link,
+                image: this.props.recipe.image
             });
         }
     }
@@ -53,13 +57,17 @@ class EditRecipe extends React.Component {
     }
 
     render() {
-        const { name, link } = this.state;
+        const { name, link, image } = this.state;
+        if (this.props.loading) {
+            return <h1>Loading...</h1>;
+        }
         return (
             <div>
                 <h1>Edit Recipe</h1>
                 <RecipeForm
                     name={name}
                     link={link}
+                    image={image}
                     onChange={this.handleChange}
                 />
                 <div className="recipe-form__footer">
