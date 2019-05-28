@@ -93,10 +93,34 @@ function getIngredientByRecipeId(req, res, next) {
     });
 }
 
+function getAllIngredients(req, res, next) {
+    return knex(knexConfig)
+    .select()
+    .from("ingredients")
+    .then(ingredients => {
+        res.status(200).send(ingredients);
+        return next();
+    });
+}
+
+function addIngredientType(req, res, next) {
+    const ingredient = Object.assign({}, req.body);
+    ingredient.id = kebabCase(ingredient.name.toLowerCase());
+    return knex(knexConfig)
+    .insert(ingredient)
+    .into("ingredients")
+    .then(() => {
+        res.status(201).send(ingredient);
+        return next();
+    });
+}
+
 module.exports = {
     getRecipes,
     createRecipe,
     getRecipeById,
     updateRecipe,
-    getIngredientByRecipeId
+    getIngredientByRecipeId,
+    getAllIngredients,
+    addIngredientType
 };

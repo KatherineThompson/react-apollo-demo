@@ -7,7 +7,9 @@ const {
     createRecipe,
     getRecipeById,
     updateRecipe,
-    getIngredientByRecipeId
+    getIngredientByRecipeId,
+    addIngredientType,
+    getAllIngredients
 } = require("./handler");
 
 const app = express();
@@ -23,5 +25,7 @@ app.get("/recipes/:recipeId", getRecipeById);
 app.get("/recipes/:recipeId/ingredients", getIngredientByRecipeId);
 app.put("/recipes/:recipeId", updateRecipe);
 app.post("/recipes", createRecipe);
+app.post("/ingredients", createRecipe);
+app.get("/ingredients", getAllIngredients);
 
 app.listen(2222, () => global.console.log("Micro service ready at http://localhost:2222"));

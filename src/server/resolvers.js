@@ -57,6 +57,27 @@ function getRecipeIngredients(_, { recipeId }) {
     return getIngredientsByRecipeId(recipeId);
 }
 
+function getAllIngredients() {
+    return superagent
+    .get(`${microServiceUrl}/ingredients`)
+    .then(res => res.body)
+    .catch(err => {
+        global.console.log("Error", err);
+        throw err;
+    });
+}
+
+function createIngredient(_, { ingredient }) {
+    return superagent
+    .post(`${microServiceUrl}/ingredients`)
+    .send(ingredient)
+    .then(res => res.body)
+    .catch(err => {
+        global.console.log("Error", err);
+        throw err;
+    });
+}
+
 const Recipe = {
     id: ({ id }) => id,
     name: ({ name }) => name,
@@ -72,17 +93,24 @@ const RecipeIngredient = {
     amount: ({ amount }) => amount,
     unit: ({ unit }) => unit
 };
+const Ingredient = {
+    id: ({ id }) => id,
+    name: ({ name }) => name
+};
 
 module.exports = {
     RootQuery: {
         recipes: getRecipes,
         recipe: getRecipeById,
-        recipeIngredients: getRecipeIngredients
+        recipeIngredients: getRecipeIngredients,
+        ingredients: getAllIngredients
     },
     Mutation: {
         createRecipe,
-        editRecipe
+        editRecipe,
+        createIngredient
     },
     Recipe,
-    RecipeIngredient
+    RecipeIngredient,
+    Ingredient
 };

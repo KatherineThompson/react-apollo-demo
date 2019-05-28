@@ -28,11 +28,24 @@ const recipeIngredient = gql`
     }
 `;
 
+const ingredient = gql`
+    type Ingredient {
+        id: ID
+        name: String
+    }
+`;
+
+const ingredientInput = gql`
+    input IngredientInput {
+        name: String
+    }
+`;
 
 const mutations = gql`
     type Mutation {
         createRecipe(recipe: RecipeInput!): Recipe
         editRecipe(recipe: RecipeInput!, id: ID!): Recipe
+        createIngredient(ingredient: IngredientInput): Ingredient
     }
 `;
 
@@ -41,6 +54,7 @@ const rootQuery = gql`
         recipes: [Recipe]
         recipe(id: ID!): Recipe
         recipeIngredients(recipeId: ID!): [RecipeIngredient]
+        ingredients: [Ingredient]
     }
 `;
 
@@ -57,5 +71,7 @@ module.exports = [
     recipe,
     recipeInput,
     mutations,
-    recipeIngredient
+    recipeIngredient,
+    ingredient,
+    ingredientInput
 ];
