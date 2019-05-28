@@ -62,23 +62,37 @@ h1 {
     }
 }
 
+.form-row--multi,
 .form-row {
     align-items: center;
     display: flex;
     justify-content: space-between;
     margin-bottom: 12px;
+    &--multi {
+        margin-top: 12px;
+        > div {
+            flex-basis: calc(28% - 8px);
+        }
+    }
     > div {
         display: flex;
         flex-direction: column;
-        flex-basis: calc(50% - 8px);
     }
+    select,
     input {
+        background-color: white;
         border: 1px solid gray;
         border-radius: 4px;
         font-family: @font-family;
         font-size: @font-size;
         height: 32px;
         padding: 0 8px;
+    }
+    select {
+        cursor: pointer;
+    }
+    .button {
+        margin-top: 16px;
     }
 }
 

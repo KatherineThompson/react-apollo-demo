@@ -13,6 +13,12 @@ const createRecipe = gql`
             name
             image
             link
+            ingredients {
+                id
+                name
+                amount
+                unit
+            }
         }
     }
 `;

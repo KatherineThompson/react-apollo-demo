@@ -67,10 +67,31 @@ function getAllIngredients() {
     });
 }
 
+function getUnits() {
+    return superagent
+    .get(`${microServiceUrl}/units`)
+    .then(res => res.body)
+    .catch(err => {
+        global.console.log("Error", err);
+        throw err;
+    });
+}
+
 function createIngredient(_, { ingredient }) {
     return superagent
     .post(`${microServiceUrl}/ingredients`)
     .send(ingredient)
+    .then(res => res.body)
+    .catch(err => {
+        global.console.log("Error", err);
+        throw err;
+    });
+}
+
+function addRecipeIngredient(_, { recipeId, recipeIngredient }) {
+    return superagent
+    .post(`${microServiceUrl}/recipes/${recipeId}/ingredients`)
+    .send(recipeIngredient)
     .then(res => res.body)
     .catch(err => {
         global.console.log("Error", err);
@@ -93,9 +114,15 @@ const RecipeIngredient = {
     amount: ({ amount }) => amount,
     unit: ({ unit }) => unit
 };
+
 const Ingredient = {
     id: ({ id }) => id,
     name: ({ name }) => name
+};
+
+const Unit = {
+    id: ({ id }) => id,
+    name: ({ unit }) => unit
 };
 
 module.exports = {
@@ -103,14 +130,17 @@ module.exports = {
         recipes: getRecipes,
         recipe: getRecipeById,
         recipeIngredients: getRecipeIngredients,
-        ingredients: getAllIngredients
+        ingredients: getAllIngredients,
+        units: getUnits
     },
     Mutation: {
         createRecipe,
         editRecipe,
-        createIngredient
+        createIngredient,
+        addRecipeIngredient
     },
     Recipe,
     RecipeIngredient,
-    Ingredient
+    Ingredient,
+    Unit
 };

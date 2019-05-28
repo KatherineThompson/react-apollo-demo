@@ -12,6 +12,12 @@ const editRecipe = gql`
             name
             image
             link
+            ingredients {
+                id
+                name
+                amount
+                unit
+            }
         }
     }
 `;

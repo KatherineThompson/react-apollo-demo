@@ -115,6 +115,36 @@ function addIngredientType(req, res, next) {
     });
 }
 
+function addRecipeIngredient(req, res, next) {
+    return knex(knexConfig)
+    .insert(req.body)
+    .into("recipes_ingredients")
+    .then(() => (
+        knex(knexConfig)
+        .select(fields)
+        .leftJoin("ingredients", "recipes_ingredients.ingredient_id", "ingredients.id")
+        .leftJoin("units", "recipes_ingredients.unit_id", "units.id")
+        .where({ "recipes_ingredients.recipe_id": req.params.recipeId })
+        .from("recipes_ingredients")
+        .groupBy("ingredients.id")
+    ))
+    .then(ingredient => {
+        res.status(201).send(ingredient);
+        return next();
+    });
+}
+
+function getUnits(req, res, next) {
+    return knex(knexConfig)
+    .select()
+    .from("units")
+    .then(units => {
+        res.status(200).send(units);
+        return next();
+    });
+}
+
+
 module.exports = {
     getRecipes,
     createRecipe,
@@ -122,5 +152,7 @@ module.exports = {
     updateRecipe,
     getIngredientByRecipeId,
     getAllIngredients,
-    addIngredientType
+    addIngredientType,
+    addRecipeIngredient,
+    getUnits
 };

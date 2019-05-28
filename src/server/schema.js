@@ -27,6 +27,14 @@ const recipeIngredient = gql`
         unit: String
     }
 `;
+const recipeIngredientInput = gql`
+    input RecipeIngredientInput {
+        ingredient_id: ID
+        recipe_id: ID
+        amount: Float
+        unit_id: String
+    }
+`;
 
 const ingredient = gql`
     type Ingredient {
@@ -41,11 +49,19 @@ const ingredientInput = gql`
     }
 `;
 
+const unit = gql`
+    type Unit {
+        id: ID
+        name: String
+    }
+`;
+
 const mutations = gql`
     type Mutation {
         createRecipe(recipe: RecipeInput!): Recipe
         editRecipe(recipe: RecipeInput!, id: ID!): Recipe
-        createIngredient(ingredient: IngredientInput): Ingredient
+        createIngredient(ingredient: IngredientInput!): Ingredient
+        addRecipeIngredient(recipeIngredient: RecipeIngredientInput!, recipeId: ID!): [RecipeIngredient]
     }
 `;
 
@@ -55,6 +71,7 @@ const rootQuery = gql`
         recipe(id: ID!): Recipe
         recipeIngredients(recipeId: ID!): [RecipeIngredient]
         ingredients: [Ingredient]
+        units: [Unit]
     }
 `;
 
@@ -73,5 +90,7 @@ module.exports = [
     mutations,
     recipeIngredient,
     ingredient,
-    ingredientInput
+    ingredientInput,
+    unit,
+    recipeIngredientInput
 ];

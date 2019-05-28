@@ -30,10 +30,13 @@ class CreateIngredient extends React.Component {
                 <h1>Add Ingredient</h1>
                 <form>
                     <div className="form-row">
-                        <input
-                            value={this.state.name}
-                            onChange={e => this.setState({ name: e.target.value })}
-                        />
+                        <div>
+                            <label>Name</label>
+                            <input
+                                value={this.state.name}
+                                onChange={e => this.setState({ name: e.target.value })}
+                            />
+                        </div>
                     </div>
                 </form>
                 <div className="recipe-form__footer">

@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { graphql } from "react-apollo";
 import gql from "graphql-tag";
 
+import RecipeIngredients from "./recipe-ingredients";
+
 const recipeQuery = gql`
     query RecipeQuery($id: ID!) {
         recipe(id: $id) {
@@ -34,10 +36,6 @@ const ViewRecipe = ({ recipe, loading, error }) => {
         );
     }
 
-    const ingredients = recipe.ingredients.length ? recipe.ingredients.map(ingredient => (
-        <div key={ingredient.id}>{`${ingredient.amount} ${ingredient.unit}${ingredient.amount !== 1 ? "s" : ""} ${ingredient.name}`}</div>
-    )) : <div>No ingredients for this recipe</div>;
-
     return (
         <div className="recipe-view">
             <div className="recipe-view__header">
@@ -58,8 +56,10 @@ const ViewRecipe = ({ recipe, loading, error }) => {
                 </div>
             </div>
             <a href={recipe.link || ""}>Link</a>
-            <h3>Ingredients</h3>
-            {ingredients}
+            <RecipeIngredients
+                recipeIngredients={recipe.ingredients}
+                recipeId={recipe.id}
+            />
             <img src={recipe.image || recipe.defaultImage} />
         </div>
     );

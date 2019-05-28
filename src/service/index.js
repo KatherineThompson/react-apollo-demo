@@ -9,7 +9,9 @@ const {
     updateRecipe,
     getIngredientByRecipeId,
     addIngredientType,
-    getAllIngredients
+    getAllIngredients,
+    addRecipeIngredient,
+    getUnits
 } = require("./handler");
 
 const app = express();
@@ -23,9 +25,11 @@ app.get("/health-check", function(req, res) {
 app.get("/recipes", getRecipes);
 app.get("/recipes/:recipeId", getRecipeById);
 app.get("/recipes/:recipeId/ingredients", getIngredientByRecipeId);
+app.post("/recipes/:recipeId/ingredients", addRecipeIngredient);
 app.put("/recipes/:recipeId", updateRecipe);
 app.post("/recipes", createRecipe);
-app.post("/ingredients", createRecipe);
+app.post("/ingredients", addIngredientType);
 app.get("/ingredients", getAllIngredients);
+app.get("/units", getUnits);
 
 app.listen(2222, () => global.console.log("Micro service ready at http://localhost:2222"));
