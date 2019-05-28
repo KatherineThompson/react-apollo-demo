@@ -13,11 +13,30 @@ const knexConfig = {
         dateStrings: true
     }
 };
+const recipeFields = [
+    "recipes.id",
+    "recipes.name",
+    "recipes.link",
+    "recipes.image"
+];
 
 function getRecipes(req, res, next) {
     return knex(knexConfig)
-    .select()
+    .select(recipeFields)
     .from("recipes")
+    .leftJoin("recipes_ingredients", "recipes.id", "recipes_ingredients.recipe_id")
+    .modify(query => {
+        if (req.query.page) {
+            const page = req.query.page - 1;
+            const offset = page > 0 ? page * 2 : 0;
+            query.offset(offset);
+            query.limit(2);
+        }
+        if (req.query.ingredient) {
+            query.where({ "recipes_ingredients.ingredient_id": req.query.ingredient });
+        }
+    })
+    .groupBy("recipes.id")
     .then(recipes => {
         res.status(200).send(recipes);
         return next();
