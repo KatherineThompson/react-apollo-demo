@@ -1,4 +1,5 @@
 const knex = require("knex");
+const kebabCase = require("lodash/kebabCase");
 
 const knexConfig = {
     client: "mysql",
@@ -23,6 +24,79 @@ function getRecipes(req, res, next) {
     });
 }
 
+function createRecipe(req, res, next) {
+    const recipe = Object.assign({}, req.body);
+    recipe.id = kebabCase(recipe.name.toLowerCase());
+    return knex(knexConfig)
+    .insert(recipe)
+    .into("recipes")
+    .then(() => {
+        res.status(201).send(recipe);
+        return next();
+    });
+}
+
+function getRecipeById(req, res, next) {
+    return knex(knexConfig)
+    .select()
+    .where({ id: req.params.recipeId })
+    .from("recipes")
+    .first()
+    .then(recipe => {
+        if (!recipe) {
+            res.status(404);
+            return next(new Error("Not found"));
+        }
+        res.status(202).send(recipe);
+        return next();
+    });
+}
+
+function updateRecipe(req, res, next) {
+    if (req.body.name === "error") {
+        res.status(500);
+        return next(new Error("Oops"));
+    }
+    const recipe = Object.assign({}, req.body);
+    return knex(knexConfig)
+    .update(recipe)
+    .where({ id: req.params.recipeId })
+    .into("recipes")
+    .then(() => {
+        res.status(200).send(Object.assign({ id: req.params.recipeId }, recipe));
+        return next();
+    });
+}
+
+const fields = [
+    "ingredients.id",
+    "ingredients.name",
+    "recipes_ingredients.amount",
+    "units.unit"
+];
+
+function getIngredientByRecipeId(req, res, next) {
+    return knex(knexConfig)
+    .select(fields)
+    .leftJoin("ingredients", "recipes_ingredients.ingredient_id", "ingredients.id")
+    .leftJoin("units", "recipes_ingredients.unit_id", "units.id")
+    .where({ "recipes_ingredients.recipe_id": req.params.recipeId })
+    .from("recipes_ingredients")
+    .groupBy("ingredients.id")
+    .then(recipe => {
+        if (!recipe) {
+            res.status(404);
+            return next(new Error("Not found"));
+        }
+        res.status(202).send(recipe);
+        return next();
+    });
+}
+
 module.exports = {
-    getRecipes
+    getRecipes,
+    createRecipe,
+    getRecipeById,
+    updateRecipe,
+    getIngredientByRecipeId
 };

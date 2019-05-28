@@ -1,20 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { AppContainer } from "react-hot-loader";
-
+import { ApolloProvider } from "react-apollo";
+import { ApolloClient } from "apollo-client";
+import { createHttpLink } from "apollo-link-http";
+import { InMemoryCache } from "apollo-cache-inmemory";
 import App from "./app";
 
-function renderApp() {
-    ReactDOM.render(
-        <AppContainer>
-            <App />
-        </AppContainer>,
-        document.getElementById("app-root"),
-    );
-}
+const client = new ApolloClient({
+    link: createHttpLink({ uri: "/graphql" }),
+    cache: new InMemoryCache({
+        dataIdFromObject: object => object.id || null
+    })
+});
 
-renderApp();
-
-if (module.hot) {
-    module.hot.accept("./app", renderApp);
-}
+ReactDOM.render(
+    <ApolloProvider client={client}>
+        <App />
+    </ApolloProvider>,
+    document.getElementById("app-root"),
+);

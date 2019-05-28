@@ -1,7 +1,12 @@
 @pink: #b5226e;
+@gray: #dbdee0;
+@font-family: Arial, Helvetica, sans-serif;
+@font-size: 1rem;
 
 body {
     height: 100vh;
+    font-family: @font-family;
+    font-size: @font-size;
     padding: 20px;
 }
 
@@ -9,10 +14,66 @@ h1 {
     color: @pink;
 }
 
-.recipe-list-item {
+.recipe-list__item {
     align-items: center;
     border: 1px solid gray;
+    border-radius: 4px;
+    color: black;
+    cursor: pointer;
     display: flex;
     height: 40px;
+    margin-bottom: 8px;
     padding: 0 12px;
+    text-decoration: none;
+    &:hover {
+        background-color: @gray;
+    }
+}
+
+.recipe-view__header,
+.recipe-form__footer,
+.recipe-list__header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.button {
+    align-items: center;
+    background-color: @gray;
+    border-radius: 4px;
+    border: none;
+    color: black;
+    cursor: pointer;
+    display: flex;
+    height: 32px;
+    font-family: @font-family;
+    font-size: @font-size;
+    justify-content: center;
+    outline: none;
+    padding: 0 12px;
+    text-decoration: none;
+    &:hover {
+        background-color: darken(@gray, 10%);
+    }
+}
+
+.form-row {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    > div {
+        display: flex;
+        flex-direction: column;
+        flex-basis: calc(50% - 8px);
+    }
+    input {
+        border: 1px solid gray;
+        border-radius: 4px;
+        font-family: @font-family;
+        font-size: @font-size;
+        height: 32px;
+        padding: 0 8px;
+    }
 }

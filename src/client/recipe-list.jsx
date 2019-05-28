@@ -1,5 +1,6 @@
 import React from "react";
 import { graphql, Query } from "react-apollo";
+import { Link } from "react-router-dom";
 import gql from "graphql-tag";
 
 const recipeListQuery = gql`
@@ -18,12 +19,27 @@ const RecipeList = ({ loading, recipes }) => {
         );
     }
     const recipeListItems = recipes.map(recipe => (
-        <div key={recipe.id} className="recipe-list-item">{recipe.name}</div>
+        <Link
+            key={recipe.id}
+            className="recipe-list__item"
+            to={`/recipes/view/${recipe.id}`}
+        >
+            {recipe.name}
+        </Link>
     ));
 
     return (
         <div>
-            <h1>Recipes</h1>
+            <div className="recipe-list__header">
+                <h1>Recipes</h1>
+                <Link
+                    className="button"
+                    to="/recipes/new"
+                >
+                    Add New Recipe
+                </Link>
+
+            </div>
             {recipeListItems}
         </div>
     );
@@ -43,3 +59,7 @@ const RecipeListWithQuery = () => (
 );
 
 export default RecipeListGraphQLHoc;
+
+export {
+    recipeListQuery
+};
