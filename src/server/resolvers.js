@@ -22,6 +22,17 @@ function getFilteredRecipes(_, { ingredientId }) {
     });
 }
 
+function getPaginatedRecipes(_, { ingredientId, pageNumber }) {
+    return superagent
+    .get(`${microServiceUrl}/recipes`)
+    .query({ ingredient: ingredientId, page: pageNumber })
+    .then(res => res.body)
+    .catch(err => {
+        global.console.log("Error", err);
+        throw err;
+    });
+}
+
 function createRecipe(_, { recipe }) {
     return superagent
     .post(`${microServiceUrl}/recipes`)
@@ -136,10 +147,17 @@ const Unit = {
     name: ({ unit }) => unit
 };
 
+const Pagination = {
+    pageNum: ({ pageNum }) => pageNum,
+    numResults: ({ numResults }) => numResults,
+    numPages: ({ numPages }) => numPages
+};
+
 module.exports = {
     RootQuery: {
         recipes: getRecipes,
         filteredRecipes: getFilteredRecipes,
+        paginatedRecipes: getPaginatedRecipes,
         recipe: getRecipeById,
         recipeIngredients: getRecipeIngredients,
         ingredients: getAllIngredients,
@@ -154,5 +172,6 @@ module.exports = {
     Recipe,
     RecipeIngredient,
     Ingredient,
-    Unit
+    Unit,
+    Pagination
 };

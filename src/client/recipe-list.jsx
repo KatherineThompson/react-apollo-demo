@@ -4,7 +4,9 @@ import { Link } from "react-router-dom";
 import gql from "graphql-tag";
 
 import IngredientsSelect from "./ingredients-select";
-import { withFilteredRecipes } from "./recipe-list-queries";
+import PageNumbers from "./page-numbers";
+
+import { withFilteredRecipes, withPaginatedRecipes } from "./recipe-list-queries";
 
 const recipeListQuery = gql`
     query RecipeListQuery {
@@ -20,6 +22,7 @@ const RecipeList = ({
     recipes,
     ingredients,
     refetch,
+    pagination,
     variables
 }) => {
     if (loading) {
@@ -39,7 +42,7 @@ const RecipeList = ({
 
     const ingredientsFilter = ingredients && ingredients.length ? (
         <IngredientsSelect
-            value={variables.ingredientId}
+            value={variables.ingredientId || ""}
             ingredients={ingredients}
             onChange={e => refetch({ ingredientId: e.target.value })}
         />
@@ -58,15 +61,20 @@ const RecipeList = ({
                 </Link>
             </div>
             {recipeListItems}
+            <PageNumbers
+                pagination={pagination}
+                onSwitchPage={pageNumber => refetch({ pageNumber, ingredientId: "" })}
+            />
         </div>
     );
 
 };
 
-// const RecipeListGraphQLHoc = graphql(recipeListQuery, {
-//     props: ({ data }) => data
-// })(RecipeList);
-const RecipeListGraphQLHoc = withFilteredRecipes(RecipeList);
+const RecipeListGraphQLHoc = graphql(recipeListQuery, {
+    props: ({ data }) => data
+})(RecipeList);
+// const RecipeListGraphQLHoc = withFilteredRecipes(RecipeList);
+// const RecipeListGraphQLHoc = withPaginatedRecipes(RecipeList);
 
 
 const RecipeListWithQuery = () => (

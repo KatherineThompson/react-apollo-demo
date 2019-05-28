@@ -6,7 +6,7 @@ const IngredientsSelect = ({ ingredients, value, onChange }) => (
         value={value}
         onChange={onChange}
     >
-        <option id="">--Please choose an option--</option>
+        <option value="">--Please choose an option--</option>
         {
             ingredients.map(ingredient => (
                 <option value={ingredient.id} key={ingredient.id}>{ingredient.name}</option>

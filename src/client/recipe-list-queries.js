@@ -21,8 +21,39 @@ const withFilteredRecipes = graphql(filteredRecipesQuery, {
     })
 });
 
+const paginateRecipesQuery = gql`
+    query PaginatedRecipes($ingredientId: ID, $pageNumber: Int) {
+        paginatedRecipes(ingredientId: $ingredientId, pageNumber: $pageNumber) {
+            recipes {
+                id
+                name
+            }
+            pagination {
+                pageNum
+                numPages
+            }
+        }
+        ingredients {
+            id
+            name
+        }
+    }
+`;
+
+const withPaginatedRecipes = graphql(paginateRecipesQuery, {
+    props: ({ data }) => ({
+        ...data,
+        recipes: data.paginatedRecipes ? data.paginatedRecipes.recipes : [],
+        pagination: data.paginatedRecipes ? data.paginatedRecipes.pagination : []
+    }),
+    options: () => ({
+        variables: { pageNumber: 1 }
+    })
+});
+
 export {
-    withFilteredRecipes
+    withFilteredRecipes,
+    withPaginatedRecipes
 };
 
 // const RecipeListGraphQLHoc = withFilteredRecipes(RecipeList);

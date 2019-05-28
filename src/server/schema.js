@@ -19,6 +19,21 @@ const recipeInput = gql`
     }
 `;
 
+const pagination = gql`
+    type Pagination {
+        pageNum: Int
+        numResults: Int
+        numPages: Int
+    }
+`;
+
+const recipeList = gql`
+    type RecipeList {
+        recipes: [Recipe]
+        pagination: Pagination
+    }
+`;
+
 const recipeIngredient = gql`
     type RecipeIngredient {
         id: ID
@@ -27,6 +42,7 @@ const recipeIngredient = gql`
         unit: String
     }
 `;
+
 const recipeIngredientInput = gql`
     input RecipeIngredientInput {
         ingredient_id: ID
@@ -69,6 +85,7 @@ const rootQuery = gql`
     type RootQuery {
         recipes: [Recipe]
         filteredRecipes(ingredientId: ID): [Recipe]
+        paginatedRecipes(ingredientId: ID, pageNumber: Int): RecipeList
         recipe(id: ID!): Recipe
         recipeIngredients(recipeId: ID!): [RecipeIngredient]
         ingredients: [Ingredient]
@@ -93,5 +110,7 @@ module.exports = [
     ingredient,
     ingredientInput,
     unit,
-    recipeIngredientInput
+    recipeIngredientInput,
+    recipeList,
+    pagination
 ];

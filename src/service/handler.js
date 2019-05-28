@@ -43,8 +43,9 @@ function getRecipes(req, res, next) {
             responseBody = {
                 recipes,
                 pagination: {
-                    page: req.query.page,
-                    numResults: 2
+                    pageNum: req.query.page,
+                    numResults: 2,
+                    numPages: 3
                 }
             };
         }
