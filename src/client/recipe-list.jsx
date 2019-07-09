@@ -70,11 +70,13 @@ const RecipeList = ({
 
 };
 
-const RecipeListGraphQLHoc = graphql(recipeListQuery, {
-    props: ({ data }) => data
-})(RecipeList);
+// const RecipeListGraphQLHoc = graphql(recipeListQuery, {
+//     props: ({ data }) => data
+// })(RecipeList);
+
+
 // const RecipeListGraphQLHoc = withFilteredRecipes(RecipeList);
-// const RecipeListGraphQLHoc = withPaginatedRecipes(RecipeList);
+const RecipeListGraphQLHoc = withPaginatedRecipes(RecipeList);
 
 
 const RecipeListWithQuery = () => (

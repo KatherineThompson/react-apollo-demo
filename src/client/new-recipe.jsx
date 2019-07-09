@@ -71,7 +71,17 @@ class NewRecipe extends React.Component {
 export default graphql(createRecipe, {
     props: ({ mutate }) => ({
         createRecipe: recipe => mutate({
-            variables: { recipe }
+            variables: { recipe },
+            update: (store, data) => {
+                try {
+                    const cacheData = store.readQuery({ query: recipeListQuery });
+                    cacheData.recipes.push(data.data.createRecipe);
+                    store.writeQuery({ query: recipeListQuery, data: cacheData });
+                }
+                catch (err) {
+                    // do nothing
+                }
+            }
         })
     })
 })(NewRecipe);

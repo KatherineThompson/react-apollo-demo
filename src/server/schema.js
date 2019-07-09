@@ -7,6 +7,7 @@ const recipe = gql`
         image: String
         defaultImage: String
         link: String
+        rating: Int
         ingredients: [RecipeIngredient]
     }
 `;

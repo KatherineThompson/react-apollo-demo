@@ -67,7 +67,8 @@ const ViewRecipe = ({ recipe, loading, error }) => {
 
 export default graphql(recipeQuery, {
     props: ({ data }) => data,
-    options: ({ id }) => ({
-        variables: { id }
-    })
+    options: (ownProps) => ({
+        variables: { id: ownProps.id }
+    }),
+    skip: ({ id }) => !id
 })(ViewRecipe);

@@ -10,6 +10,7 @@ const app = express();
 app.use(bodyParser.json({ limit: "16mb" }));
 
 const server = new ApolloServer({ typeDefs, resolvers });
+
 server.applyMiddleware({ app });
 
 app.get("/*", function(req, res) {
