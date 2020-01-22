@@ -1,117 +1,41 @@
 const { gql } = require("apollo-server-express");
 
-const recipe = gql`
-    type Recipe {
+const Todo = gql`
+    type Todo {
         id: ID
         name: String
-        image: String
-        defaultImage: String
-        link: String
-        rating: Int
-        ingredients: [RecipeIngredient]
+        dueDate: String
+        type: String
+        createdAt: Int
+        updatedAt: Int
+        assignee: String
+        completed: Boolean
+        archived: Boolean
     }
 `;
 
-const recipeInput = gql`
-    input RecipeInput {
-        name: String
-        image: String
-        link: String
-    }
-`;
+// const mutations = gql`
+//     type Mutation {
 
-const pagination = gql`
-    type Pagination {
-        pageNum: Int
-        numResults: Int
-        numPages: Int
-    }
-`;
-
-const recipeList = gql`
-    type RecipeList {
-        recipes: [Recipe]
-        pagination: Pagination
-    }
-`;
-
-const recipeIngredient = gql`
-    type RecipeIngredient {
-        id: ID
-        name: String
-        amount: Float
-        unit: String
-    }
-`;
-
-const recipeIngredientInput = gql`
-    input RecipeIngredientInput {
-        ingredient_id: ID
-        recipe_id: ID
-        amount: Float
-        unit_id: String
-    }
-`;
-
-const ingredient = gql`
-    type Ingredient {
-        id: ID
-        name: String
-    }
-`;
-
-const ingredientInput = gql`
-    input IngredientInput {
-        name: String
-    }
-`;
-
-const unit = gql`
-    type Unit {
-        id: ID
-        name: String
-    }
-`;
-
-const mutations = gql`
-    type Mutation {
-        createRecipe(recipe: RecipeInput!): Recipe
-        editRecipe(recipe: RecipeInput!, id: ID!): Recipe
-        createIngredient(ingredient: IngredientInput!): Ingredient
-        addRecipeIngredient(recipeIngredient: RecipeIngredientInput!, recipeId: ID!): [RecipeIngredient]
-    }
-`;
+//     }
+// `;
 
 const rootQuery = gql`
     type RootQuery {
-        recipes: [Recipe]
-        filteredRecipes(ingredientId: ID): [Recipe]
-        paginatedRecipes(ingredientId: ID, pageNumber: Int): RecipeList
-        recipe(id: ID!): Recipe
-        recipeIngredients(recipeId: ID!): [RecipeIngredient]
-        ingredients: [Ingredient]
-        units: [Unit]
+        todos: [Todo]
     }
 `;
 
 const schema = gql`
     schema {
         query: RootQuery
-        mutation: Mutation
+        # mutation: Mutation
     }
 `;
 
 module.exports = [
     schema,
+    // mutations,
     rootQuery,
-    recipe,
-    recipeInput,
-    mutations,
-    recipeIngredient,
-    ingredient,
-    ingredientInput,
-    unit,
-    recipeIngredientInput,
-    recipeList,
-    pagination
+    Todo
 ];

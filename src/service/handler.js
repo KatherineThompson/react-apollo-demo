@@ -1,11 +1,11 @@
 const knex = require("knex");
-const kebabCase = require("lodash/kebabCase");
+const cuid = require("cuid");
 
 const knexConfig = {
     client: "mysql",
     connection: {
         host: "localhost",
-        database: "react-apollo-demo",
+        database: "apollo-demo",
         user: "root",
         password: "",
         port: 3307,
@@ -13,176 +13,138 @@ const knexConfig = {
         dateStrings: true
     }
 };
-const recipeFields = [
-    "recipes.id",
-    "recipes.name",
-    "recipes.link",
-    "recipes.image"
+
+const todoFields = [
+    "todos.id",
+    "todos.name",
+    "todos.due_date",
+    "todos.type",
+    "todos.created_at",
+    "todos.updated_at",
+    "todos.assignee",
+    "todos.completed",
+    "todos.archived"
 ];
 
-function getRecipes(req, res, next) {
+function getToDos(req, res, next) {
     return knex(knexConfig)
-    .select(recipeFields)
-    .from("recipes")
-    .leftJoin("recipes_ingredients", "recipes.id", "recipes_ingredients.recipe_id")
-    .modify(query => {
-        if (req.query.page) {
-            const page = req.query.page - 1;
-            const offset = page > 0 ? page * 2 : 0;
-            query.offset(offset);
-            query.limit(2);
-        }
-        if (req.query.ingredient) {
-            query.where({ "recipes_ingredients.ingredient_id": req.query.ingredient });
-        }
-    })
-    .groupBy("recipes.id")
-    .then(recipes => {
-        let responseBody = recipes;
-        if (req.query.page) {
-            responseBody = {
-                recipes,
-                pagination: {
-                    pageNum: req.query.page,
-                    numResults: 2,
-                    numPages: 3
-                }
-            };
-        }
-        res.status(200).send(responseBody);
+    .select([...todoFields, "users.name"])
+    .from("todos")
+    .leftJoin("users", "todos.assignee", "users.id")
+    .where({ archived: 0 })
+    .then(todos => {
+        res.status(200).send(todos);
         return next();
     });
 }
 
-function createRecipe(req, res, next) {
-    const recipe = Object.assign({}, req.body);
-    recipe.id = kebabCase(recipe.name.toLowerCase());
+function getToDo(id) {
     return knex(knexConfig)
-    .insert(recipe)
-    .into("recipes")
+    .select([...todoFields, "users.name"])
+    .from("todos")
+    .leftJoin("users", "todos.assignee", "users.id")
+    .where({ id })
+    .first();
+}
+
+function getToDoById(req, res, next) {
+    return getToDo(req.params.toDoId)
+    .then(todo => {
+        res.status(200).send(todo);
+        return next();
+    });
+}
+
+function createToDo(req, res, next) {
+    const todo = Object.assign({}, req.body);
+    const id = cuid();
+    todo.id = id;
+    return knex(knexConfig)
+    .insert(todo)
+    .into("todos")
+    .then(() => getToDo(id))
+    .then(todo => {
+        res.status(201).send(todo);
+        return next();
+    });
+}
+
+function updateToDo(req, res, next) {
+    const todo = Object.assign({}, req.body);
+    return knex(knexConfig)
+    .update(todo)
+    .where({ id: req.params.todoId })
+    .into("todos")
+    .then(() => getToDo(req.params.todoId))
+    .then(todo => {
+        res.status(200).send(todo);
+        return next();
+    });
+}
+
+function deleteToDo(req, res, next) {
+    return knex
+    .update({ archived: true })
+    .where({ id: req.params.todoId })
+    .into("todos")
     .then(() => {
-        res.status(201).send(recipe);
+        res.status(204);
         return next();
     });
 }
 
-function getRecipeById(req, res, next) {
-    return knex(knexConfig)
-    .select()
-    .where({ id: req.params.recipeId })
-    .from("recipes")
-    .first()
-    .then(recipe => {
-        if (!recipe) {
-            res.status(404);
-            return next(new Error("Not found"));
-        }
-        res.status(202).send(recipe);
-        return next();
-    });
-}
-
-function updateRecipe(req, res, next) {
-    if (req.body.name === "error") {
-        res.status(500);
-        return next(new Error("Oops"));
-    }
-    const recipe = Object.assign({}, req.body);
-    return knex(knexConfig)
-    .update(recipe)
-    .where({ id: req.params.recipeId })
-    .into("recipes")
-    .then(() => {
-        res.status(200).send(Object.assign({ id: req.params.recipeId }, recipe));
-        return next();
-    });
-}
-
-const fields = [
-    "ingredients.id",
-    "ingredients.name",
-    "recipes_ingredients.amount",
-    "units.unit"
+const userFields = [
+    "users.id",
+    "users.name",
+    "users.email",
+    "users.phone"
 ];
 
-function getIngredientByRecipeId(req, res, next) {
+function getUsers(req, res, next) {
     return knex(knexConfig)
-    .select(fields)
-    .leftJoin("ingredients", "recipes_ingredients.ingredient_id", "ingredients.id")
-    .leftJoin("units", "recipes_ingredients.unit_id", "units.id")
-    .where({ "recipes_ingredients.recipe_id": req.params.recipeId })
-    .from("recipes_ingredients")
-    .groupBy("ingredients.id")
-    .then(recipe => {
-        if (!recipe) {
-            res.status(404);
-            return next(new Error("Not found"));
-        }
-        res.status(202).send(recipe);
+    .select(userFields)
+    .from("users")
+    .then(users => {
+        res.status(200).send(users);
         return next();
     });
 }
 
-function getAllIngredients(req, res, next) {
+function getUser(id) {
     return knex(knexConfig)
-    .select()
-    .from("ingredients")
-    .then(ingredients => {
-        res.status(200).send(ingredients);
+    .select(userFields)
+    .from("users")
+    .where({ id })
+    .first();
+}
+
+function getUserById(req, res, next) {
+    return getUser(req.params.userId)
+    .then(user => {
+        res.status(200).send(user);
         return next();
     });
 }
 
-function addIngredientType(req, res, next) {
-    const ingredient = Object.assign({}, req.body);
-    ingredient.id = kebabCase(ingredient.name.toLowerCase());
-    return knex(knexConfig)
-    .insert(ingredient)
-    .into("ingredients")
-    .then(() => {
-        res.status(201).send(ingredient);
+function updateUser(req, res, next) {
+    const user = Object.assign({}, req.body);
+    return knex
+    .update(user)
+    .where({ id: req.params.userId })
+    .then(() => getUser(req.params.userId))
+    .then(user => {
+        res.status(200).send(user);
         return next();
     });
 }
-
-function addRecipeIngredient(req, res, next) {
-    return knex(knexConfig)
-    .insert(req.body)
-    .into("recipes_ingredients")
-    .then(() => (
-        knex(knexConfig)
-        .select(fields)
-        .leftJoin("ingredients", "recipes_ingredients.ingredient_id", "ingredients.id")
-        .leftJoin("units", "recipes_ingredients.unit_id", "units.id")
-        .where({ "recipes_ingredients.recipe_id": req.params.recipeId })
-        .from("recipes_ingredients")
-        .groupBy("ingredients.id")
-    ))
-    .then(ingredient => {
-        res.status(201).send(ingredient);
-        return next();
-    });
-}
-
-function getUnits(req, res, next) {
-    return knex(knexConfig)
-    .select()
-    .from("units")
-    .then(units => {
-        res.status(200).send(units);
-        return next();
-    });
-}
-
 
 module.exports = {
-    getRecipes,
-    createRecipe,
-    getRecipeById,
-    updateRecipe,
-    getIngredientByRecipeId,
-    getAllIngredients,
-    addIngredientType,
-    addRecipeIngredient,
-    getUnits
+    getToDos,
+    getToDoById,
+    createToDo,
+    updateToDo,
+    deleteToDo,
+    getUsers,
+    getUserById,
+    updateUser
 };
